@@ -1,0 +1,44 @@
+server:
+  port: 8088
+spring:
+  liquibase:
+    enabled: true
+    change-log: "classpath:liquibase/db.changelog-master.xml"
+  application:
+    name: demo-hibernate-envers
+  jpa:
+    show-sql: true
+    open-in-view: false
+    hibernate:
+      # set type update will auto create table
+      ddl-auto: update
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        envers:
+          audit_table_suffix: _aud
+          revision_field_name: revision_id
+          revision_type_field_name: revision_type
+
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/spring_envers_service?useSSL=false&useUnicode=true&characterEncoding=UTF-8
+    username: postgres
+    password: 123456
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      auto-commit: true
+      idle-timeout: 30000
+      pool-name: PoolHikariCP
+      max-lifetime: 1800000
+      connection-timeout: 30000
+logging:
+  level:
+    root: info
