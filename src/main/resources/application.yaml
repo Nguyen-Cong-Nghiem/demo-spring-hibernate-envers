@@ -12,20 +12,23 @@ spring:
     hibernate:
       # set type update will auto create table
       ddl-auto: update
+      listener:
+        envers:
+          autoRegister: false
+      use-new-id-generator-mappings: false
       naming:
         physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
         implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
-
     properties:
       hibernate:
-        jdbc:
-          lob:
-            non_contextual_creation: true
-        envers:
-          audit_table_suffix: _aud
-          revision_field_name: revision_id
-          revision_type_field_name: revision_type
-
+       integration:
+          envers:
+            enabled: true
+       envers:
+          audit_table_suffix: _AUDIT
+          revision_field_name: REVISION_ID
+          revision_type_field_name: REVISION_TYPE
+          store_data_at_delete: true
 
   datasource:
     url: jdbc:postgresql://localhost:5432/spring_envers_service?useSSL=false&useUnicode=true&characterEncoding=UTF-8

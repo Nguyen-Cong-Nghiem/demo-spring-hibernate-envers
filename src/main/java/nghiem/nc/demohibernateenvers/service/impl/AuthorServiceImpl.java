@@ -2,8 +2,8 @@ package nghiem.nc.demohibernateenvers.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import nghiem.nc.demohibernateenvers.dto.AuthorAddDto;
@@ -21,6 +21,7 @@ import org.hibernate.envers.query.AuditQuery;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 @Service
 @Log4j2
@@ -45,14 +46,17 @@ public class AuthorServiceImpl implements AuthorService {
     saveAuthor.setCreatedBy(1L);
     saveAuthor.setUpdatedBy(1L);
     Author newAuthor = authorRepository.save(saveAuthor);
-    Book saveBook = Book.builder().name(authorAddDto.getBookAddDto().getName())
-        .type(authorAddDto.getBookAddDto().getType()).authorId(newAuthor.getId())
-        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).createdBy(1L).updatedBy(1L)
-        .build();
-    Book book = Book.builder().authorId(newAuthor.getId()).name("abc").type("comic")
-        .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).createdBy(1L).updatedBy(1L)
-        .build();
-    bookRepository.saveAll(Arrays.asList(saveBook, book));
+    List<Book> saveBookList = new ArrayList<>();
+    if (!CollectionUtils.isEmpty(authorAddDto.getBookAddDtos())) {
+      saveBookList = authorAddDto.getBookAddDtos().stream()
+          .map(b -> Book.builder().name(b.getName())
+              .type(b.getType()).authorId(newAuthor.getId())
+              .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).createdBy(1L)
+              .updatedBy(1L)
+              .build()).collect(Collectors.toList());
+    }
+
+    bookRepository.saveAll(saveBookList);
     return newAuthor;
 
   }
@@ -133,7 +137,8 @@ public class AuthorServiceImpl implements AuthorService {
     auditQuery2.add(AuditEntity.property("id").eq(id));
     Number revision = (Number) auditQuery2.getSingleResult();
     revision = revision != null ? revision : 0;
-    AuditQuery auditQuery = auditReader.createQuery().forRevisionsOfEntity(Author.class, false,true);
+    AuditQuery auditQuery = auditReader.createQuery()
+        .forRevisionsOfEntity(Author.class, false, true);
     auditQuery.addProjection(AuditEntity.revisionNumber().max());
     auditQuery.add(AuditEntity.property("id").eq(2L));
     Number revisionLastest = (Number) auditQuery.getSingleResult();
@@ -158,7 +163,6 @@ public class AuthorServiceImpl implements AuthorService {
     }
     return result;
   }
-
 
 
   private Class<?> getClassType(String entity) {

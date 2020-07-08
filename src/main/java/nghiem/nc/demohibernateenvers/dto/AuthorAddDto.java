@@ -1,5 +1,6 @@
 package nghiem.nc.demohibernateenvers.dto;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +16,6 @@ public class AuthorAddDto {
 
   private String name;
   private String type;
-  private BookAddDto bookAddDto;
+  private List<BookAddDto> bookAddDtos;
 
 }

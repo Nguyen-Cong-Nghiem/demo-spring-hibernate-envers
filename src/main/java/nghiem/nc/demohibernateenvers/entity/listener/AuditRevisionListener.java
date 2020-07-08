@@ -3,7 +3,7 @@
 //import com.fasterxml.jackson.databind.ObjectMapper;
 //import java.io.UnsupportedEncodingException;
 //import javax.servlet.http.HttpServletRequest;
-//import nghiem.nc.demohibernateenvers.entity.CustomRevisionEntity;
+//import nghiem.nc.demohibernateenvers.entity.AuditRevisionEntity;
 //import org.apache.tomcat.util.codec.binary.Base64;
 //import org.hibernate.envers.RevisionListener;
 //import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@
 //import org.springframework.stereotype.Component;
 //
 //@Component
-//public class CustomRevisionListener implements RevisionListener {
+//public class AuditRevisionListener implements RevisionListener {
 //
 //  @Autowired
 //  private HttpServletRequest httpServletRequest;
@@ -21,7 +21,7 @@
 //  @Override
 //  public void newRevision(Object revisionEntity) {
 //
-//    CustomRevisionEntity rev = (CustomRevisionEntity) revisionEntity;
+//    AuditRevisionEntity rev = (AuditRevisionEntity) revisionEntity;
 //    rev.setUsername(getUsername());
 //  }
 //
